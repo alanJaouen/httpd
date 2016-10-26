@@ -1,2 +1,47 @@
-README
-Tout reste a faire
+[ ] README
+
+==LEVEL 0==
+[ ] Read server config
+[ ] malformed check on server config
+[X] signal handling
+
+==LEVEL 1==
+[ ] handle get request
+[ ] provide anwser to get request
+[ ] handle 200, 505, 403, 404 error
+
+==LEVEL 2==
+[ ] execute CGI
+[ ] return CGI result
+[ ] handle error on header and invoking script
+
+==LEVEL 3==
+[ ] handle post request
+[ ] handle content lengt header
+[ ] handle status hearder error
+
+==LEVEL 4==
+[ ] parse argument file
+[ ] use parsed information in config
+
+==LEVEL 5==
+[ ] create a deamon
+[ ] handle action start
+[ ] handle action stop
+[ ] handle action reload
+[ ] handle action restart
+[ ] write stdout in logfile
+
+==LEVEL 6==
+[ ] choose an implementation
+[ ] code this implementation
+[ ] BONUS: C10K
+
+==LEVEL 7==
+[ ] set content-type header
+[ ] handle connection header
+    [ ] close
+    [ ] keep-alive
+
+==LEVEL 8==
+[ ] handle all kind of crash
