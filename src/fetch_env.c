@@ -71,7 +71,6 @@ void set_root(char *path)
 {
     char *cur_dir = get_current_dir_name();
 
-    printf("%s\n", cur_dir);
     if (!cur_dir)
       exit(1);
 
@@ -85,11 +84,7 @@ void set_root(char *path)
 
     size_t n = strlen(cur_dir);
 
-    printf("%zu\n", n);
-
     path = memcpy(path, cur_dir, n+1);
-
-    printf("%s\n", path);
 }
 
 s_env *struct_init(void)
@@ -144,8 +139,6 @@ void fetch(s_env *env)
     set_root(env->rdir);
   else
     env->rdir = p;
-
-  printf("%s\n", env->rdir);
 }
 
 void fetch_env(void)
