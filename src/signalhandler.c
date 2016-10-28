@@ -4,6 +4,8 @@
 #include <signal.h>
 #include "signalhandler.h"
 
+
+
 void init_handler(void)
 {
   struct sigaction new;
