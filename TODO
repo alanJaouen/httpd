@@ -1,7 +1,9 @@
 [ ] README
 
 ==LEVEL 0==
-[ ] Read server config
+[X] Read server config
+    [ ] Optimise fetch function
+    [ ] Free malloc done by get_current_dir_name
 [ ] malformed check on server config
 [X] signal handling
 
