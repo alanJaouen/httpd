@@ -11,6 +11,12 @@ int init_server(void);
 
 void make_response(int fd_user);
 
-int check_requestline(char *req, int fd_user);
+int check_requestline(char *req, char *file);
+
+enum type
+{
+  GET,
+  POST
+};
 
 #endif

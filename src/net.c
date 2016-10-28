@@ -8,6 +8,7 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
+#include <stdlib.h>
 #include <regex.h>
 #include "net.h"
 #define BUFFSIZE 1024
@@ -16,61 +17,61 @@ void make_response(int fd_user)
 {
   char buff[BUFFSIZE];//TODO voir la doc
   int s_read = read_socket(fd_user, buff, BUFFSIZE);
+  char *file = malloc(1024);
 
-  if (check_requestline(buff, fd_user))
+  int t =check_requestline(buff, file);
+  if (t == -1)
     return;
-
   while (s_read > 0)
   {
     write(STDOUT_FILENO, buff, s_read);
     s_read = read_socket(fd_user, buff, BUFFSIZE);
+  }
+  switch (t)
+  {
+    case -1:
+      return;
+    case GET:
+      get_file(file);
+      break;
+    case POST:
+      //TODO that
+      break;
   }
 
 
 }
 
 //return -1 in case of fail
-int check_requestline(char *req, int fd_user)
+int check_requestline(char *req, char *file)
 {
-  char *regex =
-    "^(GET|POST) [\\/a-zA-Z0-9.]* HTTP\\/([0-9]*|[0-9]*\\.[0-9]*)";
+  char *r = "^(GET|POST) ([\\/_-a-zA-Z0-9.]*) HTTP\\/([0-9]*|[0-9]*\\.[0-9]*)";
   regex_t regex2;
-
-  if (regcomp(&regex2, regex, REG_EXTENDED))
-  {
-    perror("regcomp");
+  if (regcomp(&regex2, r, REG_EXTENDED))
     return -1;
-  }
   char *cur = req;
   regmatch_t arr[4];
   if (regexec(&regex2, cur, 3, arr, 0))
-  {
-    perror("malformated header");
     return -1;
-  }
-  int start = arr[1].rm_so + (cur - req);
-  int finish = arr[1].rm_eo + (cur - req);
-  if (strncmp("GET",
-        req + arr[1].rm_so + (cur - req),
-        arr[1].rm_eo + (cur - req) - arr[1].rm_eo + (cur - req))
-      && strncmp("POST",
-        req + arr[1].rm_so + (cur - req),
+  int type = -1;
+  if (!strncmp("GET", req + arr[1].rm_so + (cur - req),
         arr[1].rm_eo + (cur - req) - arr[1].rm_eo + (cur - req)))
-  {
+    type = GET;
+  else if (!strncmp("POST", req + arr[1].rm_so + (cur - req),
+        arr[1].rm_eo + (cur - req) - arr[1].rm_eo + (cur - req)))
+    type =POST;
+  else
     perror("50X");
-    return 1;
-  }
-
-  if ("1.1",
-      req + arr[2].rm_so + (cur - req),
-      arr[2].rm_eo + (cur - req) - arr[2].rm_eo + (cur - req))
+  if (strncmp("1.1", req + arr[3].rm_so + (cur - req),
+      arr[2].rm_eo + (cur - req) - arr[3].rm_eo + (cur - req)))
   {
     perror("505");
-    return 1;
+    type = -1;
   }
-
+  file = memcpy(file, req + arr[2].rm_so + (cur - req),
+      arr[2].rm_eo + (cur - req) - arr[2].rm_eo + (cur - req));
   regfree(&regex2);
-  return 0;
+  return type;
 }
 
 int run_server(int fd_sock )
