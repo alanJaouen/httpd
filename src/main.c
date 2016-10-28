@@ -7,7 +7,8 @@ int main()
 {
   fetch_env();
   init_handler();
-  printest();
+  init_server();
+  return 9;
   for (int i = 0; i < 5; i++)
   {
     i = 0;
