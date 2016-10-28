@@ -1,7 +1,7 @@
-AC_INIT([myhttpd],
+AC_INIT([myHTTPd],
 	[1.0],
 	[oui@cool.fr],
-	[myhttpd],
+	[myHTTPd],
 	[https://site.fr/])
 
 AM_INIT_AUTOMAKE([
@@ -9,7 +9,7 @@ AM_INIT_AUTOMAKE([
                   foreign
                   -Wall])
 
-CFLAGS="-Iinclude"
+CFLAGS="-Wall -Wextra -pedantic -std=c99 -Iinclude -g"
 
 AC_PROG_CC
 

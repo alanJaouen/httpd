@@ -1,5 +1,6 @@
-bin_PROGRAMS = myhttpd
+bin_PROGRAMS = myHTTPd
 
-myhttpd_SOURCES = src/main.c \
+myHTTPd_SOURCES = src/main.c \
 									src/net.c \
+                  src/fetch_env.c \
 									src/signalhandler.c
