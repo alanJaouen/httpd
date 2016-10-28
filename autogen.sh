@@ -2,4 +2,4 @@
 
 set -e
 
-autoreconf --install --symlink -Wall
+autoreconf --install --symlink -Wall --make -v

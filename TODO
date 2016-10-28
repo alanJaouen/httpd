@@ -8,7 +8,7 @@
 [X] signal handling
 
 ==LEVEL 1==
-[ ] handle get request
+[X] handle get request
 [ ] provide anwser to get request
 [ ] handle 200, 505, 403, 404 error
 
