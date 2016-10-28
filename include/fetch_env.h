@@ -22,8 +22,8 @@ struct env
 
 char *env_set(char *var);
 s_env *struct_init(void);
-int check_ip(char *env);
-int check_port(char *port);
+void check_ip(char *env);
+void check_port(char *port);
 void set_root(char *path);
 void fetch(s_env *env);
 void fetch_env(void);

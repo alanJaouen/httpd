@@ -10,7 +10,7 @@ char *env_set(char *var)
   return val;
 }
 
-int check_ip(char *ip)
+void check_ip(char *ip)
 {
   int scount = 0;
   int ccount = 0;
@@ -24,12 +24,12 @@ int check_ip(char *ip)
     if (*ip == '.')
     {
       if (ccount == 0)
-        return 0;
+        exit(1);
 
       scount++;
 
       if (scount == 4)
-        return 0;
+        exit(1);
 
       valseg = 0;
       ccount = 0;
@@ -38,45 +38,40 @@ int check_ip(char *ip)
     }
 
     if ((*ip < '0') || (*ip > '9'))
-      return 0;
+      exit(1);
 
     valseg = valseg * 10 + *ip - '0';
 
     if (valseg > 255)
-      return 0;
+      exit(1);
 
     ccount++;
     ip++;
   }
 
   if (scount != 3)
-    return 0;
+    exit(1);
 
   if (ccount == 0)
-    return 0;
-
-  return 1;
+    exit(1);
 }
 
-int check_port(char *port)
+void check_port(char *port)
 {
   if (!port)
-    return 0;
+    exit(1);
 
   int res = atoi(port);
 
   if (res < 0 || res > 65535)
-    return 0;
-
-  return 1;
+    exit(1);
 }
 
 void set_root(char *path)
 {
-  if (!path)
-  {
     char *cur_dir = get_current_dir_name();
 
+    printf("%s\n", cur_dir);
     if (!cur_dir)
       exit(1);
 
@@ -88,8 +83,13 @@ void set_root(char *path)
     if (!S_ISDIR(buf.st_mode))
       exit(1);
 
-    path = cur_dir;
-  }
+    size_t n = strlen(cur_dir);
+
+    printf("%zu\n", n);
+
+    path = memcpy(path, cur_dir, n+1);
+
+    printf("%s\n", path);
 }
 
 s_env *struct_init(void)
@@ -132,22 +132,20 @@ void fetch(s_env *env)
 {
   env->ip = env_set("LISTEN_IP");
 
-  int res1 = check_ip(env->ip);
-
-  if (!res1)
-    exit(1);
+  check_ip(env->ip);
 
   env->port = env_set("LISTEN_PORT");
 
-  int res2 = check_port(env->port);
+  check_port(env->port);
 
-  if (!res2)
-    exit(1);
+  char *p = env_set("ROOT_DIR");
 
-  env->rdir = env_set("ROOT_DIR");
-
-  if (!env->rdir)
+  if (!p)
     set_root(env->rdir);
+  else
+    env->rdir = p;
+
+  printf("%s\n", env->rdir);
 }
 
 void fetch_env(void)
