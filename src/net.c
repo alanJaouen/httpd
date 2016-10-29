@@ -1,5 +1,5 @@
 #define _POSIX_C_SOURCE 201112L
-#define _BSD_SOURCE
+#define _DEFAULT_SOURCE
 #include <stdio.h>
 #include <stddef.h>
 #include <sys/socket.h>
@@ -43,13 +43,13 @@ void make_response(int fd_user)
   char *file = malloc(1024);
 
   int t =check_requestline(buff, file);
-  if (t == -1)
-    return;
-  /*while (s_read > 0)
+  while (s_read > 0)
   {
     write(STDOUT_FILENO, buff, s_read);
     s_read = read_socket(fd_user, buff, BUFFSIZE);
-  }*/
+    if (!strncmp("\r\n", buff, 2))
+      break;
+  }
   write(STDOUT_FILENO, "header ok\n", 10);
   switch (t)
   {
@@ -87,7 +87,7 @@ int check_requestline(char *req, char *file)
     perror("50X");
   if (strncmp("1.1", req + arr[2].rm_eo + 6, 3))
   {
-    perror("505");
+    perror("505");//TODO 505
     type = -1;
   }
   file = memcpy(file, req + arr[2].rm_so,
