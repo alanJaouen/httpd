@@ -87,6 +87,7 @@ void set_root(char *path)
     size_t n = strlen(cur_dir);
 
     path = memcpy(path, cur_dir, n+1);
+    free(cur_dir);
 }
 
 void struct_init(void)
