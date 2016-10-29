@@ -45,12 +45,14 @@ void make_response(int fd_user)
     write(STDOUT_FILENO, buff, s_read);
     s_read = read_socket(fd_user, buff, BUFFSIZE);
   }*/
+  write(STDOUT_FILENO, "ok\n", 3);
   switch (t)
   {
     case -1:
       return;
     case GET:
       get_file(file, fd_user);
+
       break;
     case POST:
       //TODO that
@@ -75,7 +77,7 @@ int check_requestline(char *req, char *file)
     type = GET;
   else if (!strncmp("POST", req,
         4))
-    type =POST;
+    type = POST;
   else
     perror("50X");
   if (strncmp("1.1", req + arr[2].rm_eo + 6, 3))
