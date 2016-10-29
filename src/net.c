@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netdb.h>
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <string.h>
@@ -12,6 +13,22 @@
 #include <regex.h>
 #include "net.h"
 #define BUFFSIZE 1024
+
+//return true if the file exists
+int file_exist(char *path)
+{
+  struct stat tmp;
+  return !stat(path, &tmp);
+}
+
+void get_file(char *name)
+{
+  if (!file_exist(name));
+  {
+
+  }
+  return;
+}
 
 void make_response(int fd_user)
 {
@@ -22,11 +39,11 @@ void make_response(int fd_user)
   int t =check_requestline(buff, file);
   if (t == -1)
     return;
-  while (s_read > 0)
+  /*while (s_read > 0)
   {
     write(STDOUT_FILENO, buff, s_read);
     s_read = read_socket(fd_user, buff, BUFFSIZE);
-  }
+  }*/
   switch (t)
   {
     case -1:
@@ -38,14 +55,12 @@ void make_response(int fd_user)
       //TODO that
       break;
   }
-
-
 }
 
 //return -1 in case of fail
 int check_requestline(char *req, char *file)
 {
-  char *r = "^(GET|POST) ([\\/_-a-zA-Z0-9.]*) HTTP\\/([0-9]*|[0-9]*\\.[0-9]*)";
+  char *r = "^(GET|POST) ([\\/_a-zA-Z0-9.-]*) HTTP\\/([0-9]*|[0-9]*\\.[0-9]*)";
   regex_t regex2;
   if (regcomp(&regex2, r, REG_EXTENDED))
     return -1;
@@ -54,22 +69,22 @@ int check_requestline(char *req, char *file)
   if (regexec(&regex2, cur, 3, arr, 0))
     return -1;
   int type = -1;
-  if (!strncmp("GET", req + arr[1].rm_so + (cur - req),
-        arr[1].rm_eo + (cur - req) - arr[1].rm_eo + (cur - req)))
+  if (!strncmp("GET", req,
+        3))
     type = GET;
-  else if (!strncmp("POST", req + arr[1].rm_so + (cur - req),
-        arr[1].rm_eo + (cur - req) - arr[1].rm_eo + (cur - req)))
+  else if (!strncmp("POST", req,
+        4))
     type =POST;
   else
     perror("50X");
-  if (strncmp("1.1", req + arr[3].rm_so + (cur - req),
-      arr[2].rm_eo + (cur - req) - arr[3].rm_eo + (cur - req)))
+  if (strncmp("1.1", req + arr[2].rm_eo + 6, 3))
   {
     perror("505");
     type = -1;
   }
-  file = memcpy(file, req + arr[2].rm_so + (cur - req),
-      arr[2].rm_eo + (cur - req) - arr[2].rm_eo + (cur - req));
+  file = memcpy(file, req + arr[2].rm_so,
+       arr[2].rm_eo - arr[2].rm_so);
+  file[arr[2].rm_eo - arr[2].rm_so + 1] = '\0';
   regfree(&regex2);
   return type;
 }
@@ -112,7 +127,7 @@ int init_server(void)
   struct sockaddr_in serv;
   serv.sin_family = AF_INET;
   serv.sin_port = htons(8000);//TODO port
-  inet_aton("127.0.0.1", &(serv.sin_addr));//ip
+  inet_aton("0.0.0.0", &(serv.sin_addr));//ip
 
   void *v = &serv;
   struct sockaddr *s = v;
