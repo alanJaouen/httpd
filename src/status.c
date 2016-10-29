@@ -9,21 +9,21 @@ void status_msg(int fd, int status, int len)
 
   sprintf(str_status, "%d", status);
 
-  write(fd, "HTTP/1.1 ", 9);
-  write(fd, str_status, 3);
-  write(fd, title, strlen(title));
+  send(fd, "HTTP/1.1 ", 9, 0);
+  send(fd, str_status, 3, 0);
+  send(fd, title, strlen(title), 0);
 
   print_time(fd);
 
   if (status == 200)
   {
-    write(fd, "Content-Length: ", 16);
+    send(fd, "Content-Length: ", 16, 0);
     char *slen = malloc(sizeof (char) * 1024);
     sprintf(slen, "%d\r\n", len);
-    write(fd, slen, strlen(slen));
+    send(fd, slen, strlen(slen), 0);
   }
 
-write(fd, "\r\n", 2);
+send(fd, "\r\n", 2, 0);
 
 }
 
@@ -49,6 +49,6 @@ void print_time(int fd)
 
   char *s = malloc(sizeof (char) * 39);
   strftime(s, 38, "Date: %a, %d %b %Y %R:%S GMT\r\n", info);
-  write(fd, s, 38);
+  send(fd, s, 38, 0);
 
 }

@@ -18,6 +18,7 @@ struct env
   char *ip;
   char *port;
   char *rdir;
+  int fd_server;
 };
 
 extern s_env *g_env;

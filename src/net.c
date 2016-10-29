@@ -25,9 +25,14 @@ int file_exist(char *path)
 
 void get_file(char *name, int fd_user)
 {
-  //TODO name = ROOTDIR+NAME
-  if (!file_exist(name));
+  char f[1024];
+  strcpy(f, g_env->rdir);
+  strcat(f, name);
+  if (!file_exist(f))
     status_msg(fd_user, 404, 0);
+  else if (access(f, R_OK))
+    status_msg(fd_user, 403, 0);
+  write(STDOUT_FILENO, "file ok\n", 8);
   return;
 }
 
@@ -45,7 +50,7 @@ void make_response(int fd_user)
     write(STDOUT_FILENO, buff, s_read);
     s_read = read_socket(fd_user, buff, BUFFSIZE);
   }*/
-  write(STDOUT_FILENO, "ok\n", 3);
+  write(STDOUT_FILENO, "header ok\n", 10);
   switch (t)
   {
     case -1:
@@ -121,16 +126,16 @@ int run_server(int fd_sock )
 int init_server(void)
 {
   int fd_sock = socket(AF_INET, SOCK_STREAM, 0);
-  //TODO AJOUTER LE FD A LA STRUCT GLOBALE
   if (fd_sock < 0)
   {
     perror("socket");
     return 1;
   }
+  g_env->fd_server = fd_sock;
   struct sockaddr_in serv;
   serv.sin_family = AF_INET;
-  serv.sin_port = htons(8000);//TODO port
-  inet_aton("0.0.0.0", &(serv.sin_addr));//ip
+  serv.sin_port = htons(atoi(g_env->port));//port
+  inet_aton(g_env->ip, &(serv.sin_addr));//ip
 
   void *v = &serv;
   struct sockaddr *s = v;
