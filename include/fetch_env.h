@@ -20,12 +20,14 @@ struct env
   char *rdir;
 };
 
+extern s_env *g_env;
+
 char *env_set(char *var);
-s_env *struct_init(void);
-void check_ip(char *env);
+void struct_init(void);
+void check_ip(char *ip);
 void check_port(char *port);
 void set_root(char *path);
-void fetch(s_env *env);
+void fetch(void);
 void fetch_env(void);
 
 #endif

@@ -1,5 +1,7 @@
 #include "fetch_env.h"
 
+s_env *g_env = NULL;
+
 char *env_set(char *var)
 {
   char *val = getenv(var);
@@ -87,62 +89,61 @@ void set_root(char *path)
     path = memcpy(path, cur_dir, n+1);
 }
 
-s_env *struct_init(void)
+void struct_init(void)
 {
-  s_env *env = malloc(sizeof (s_env));
-  if (!env)
+  g_env = malloc(sizeof (s_env));
+  if (!g_env)
     exit(1);
 
-  env->ip = malloc(sizeof (char) * 16);
+  g_env->ip = malloc(sizeof (char) * 16);
 
-  if (!env->ip)
+  if (!g_env->ip)
   {
-    free(env);
+    free(g_env);
     exit(1);
   }
 
-  env->port = malloc(sizeof (char) * 6);
+  g_env->port = malloc(sizeof (char) * 6);
 
-  if (!env->port)
+  if (!g_env->port)
   {
-    free(env->ip);
-    free(env);
+    free(g_env->ip);
+    free(g_env);
     exit(1);
   }
 
-  env->rdir = malloc(sizeof (char) * 1024);
+  g_env->rdir = malloc(sizeof (char) * 1024);
 
-  if (!env->rdir)
+  if (!g_env->rdir)
   {
-    free(env->ip);
-    free(env->port);
-    free(env);
+    free(g_env->ip);
+    free(g_env->port);
+    free(g_env);
     exit(1);
   }
 
-  return env;
 }
 
-void fetch(s_env *env)
+void fetch(void)
 {
-  env->ip = env_set("LISTEN_IP");
+  g_env->ip = env_set("LISTEN_IP");
 
-  check_ip(env->ip);
+  check_ip(g_env->ip);
 
-  env->port = env_set("LISTEN_PORT");
+  g_env->port = env_set("LISTEN_PORT");
 
-  check_port(env->port);
+  check_port(g_env->port);
 
   char *p = env_set("ROOT_DIR");
 
   if (!p)
-    set_root(env->rdir);
+    set_root(g_env->rdir);
   else
-    env->rdir = p;
+    g_env->rdir = p;
 }
 
 void fetch_env(void)
 {
-  s_env *env = struct_init();
-  fetch(env);
+  struct_init();
+  fetch();
 }
