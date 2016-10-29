@@ -21,10 +21,13 @@ void status_msg(int fd, int status, int len)
     char *slen = malloc(sizeof (char) * 1024);
     sprintf(slen, "%d\r\n", len);
     send(fd, slen, strlen(slen), 0);
+    free(slen);
   }
 
-send(fd, "\r\n", 2, 0);
+  send(fd, "\r\n", 2, 0);
 
+  free(title);
+  free(str_status);
 }
 
 char *status_title(int status)
@@ -51,4 +54,5 @@ void print_time(int fd)
   strftime(s, 38, "Date: %a, %d %b %Y %R:%S GMT\r\n", info);
   send(fd, s, 38, 0);
 
+  free(s);
 }
