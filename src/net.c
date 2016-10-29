@@ -12,6 +12,8 @@
 #include <stdlib.h>
 #include <regex.h>
 #include "net.h"
+#include "fetch_env.h"
+#include "status.h"
 #define BUFFSIZE 1024
 
 //return true if the file exists
@@ -21,12 +23,11 @@ int file_exist(char *path)
   return !stat(path, &tmp);
 }
 
-void get_file(char *name)
+void get_file(char *name, int fd_user)
 {
+  //TODO name = ROOTDIR+NAME
   if (!file_exist(name));
-  {
-
-  }
+    status_msg(fd_user, 404, 0);
   return;
 }
 
@@ -49,7 +50,7 @@ void make_response(int fd_user)
     case -1:
       return;
     case GET:
-      get_file(file);
+      get_file(file, fd_user);
       break;
     case POST:
       //TODO that
