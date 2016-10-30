@@ -2,15 +2,15 @@
 
 ==LEVEL 0==
 [X] Read server config
-    [ ] Optimise fetch function
-    [ ] Free malloc done by get_current_dir_name
-[ ] malformed check on server config
+    [X] Optimise fetch function
+    [X] Free malloc done by get_current_dir_name
+[X] malformed check on server config
 [X] signal handling
 
 ==LEVEL 1==
 [X] handle get request
-[ ] provide anwser to get request
-[ ] handle 200, 505, 403, 404 error
+[X] provide anwser to get request
+[X] handle 200, 505, 403, 404 error
 
 ==LEVEL 2==
 [ ] execute CGI
