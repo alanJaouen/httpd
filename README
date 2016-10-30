@@ -14,10 +14,13 @@ DESCRIPTION
 
 	*	LISTEN_PORT		Contains the port where the server should accept connexion
 
-		ROOT_DIR			The root directory of the server. If this variable is not set
-									it will be the current directory.
+		ROOT_DIR			The root directory of the server. If not set the root
+									directory will be the current directory.
 
 	GET request can only be done on regular files.
+
+	
+	This program was a 5-day subject at EPITA engineering school.
 
 INSTALL
 	./autogen.sh
@@ -25,3 +28,9 @@ INSTALL
 	make
 
 TEST
+	first launch the server on the program directory.
+	then launch the tests suite:
+		./tests/test.sh <ip of server> <port of server>
+
+AUTHORS
+	Céline Lobry & Alan Jaouen
