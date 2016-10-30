@@ -1,7 +1,6 @@
 #ifndef FETCH_ENV_H
 # define FETCH_ENV_H
 
-# define _BSD_SOURCE
 # define _GNU_SOURCE
 
 #include <stdio.h>
