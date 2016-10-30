@@ -16,8 +16,10 @@ DESCRIPTION
 
 		ROOT_DIR:	the root directory of the server. If not set the root directory
 				will be the current directory.
-	
+
 	GET request can only done on regular file.
+
+	This program was a subject of 5 days at Epita.
 
 INSTALL
 	./autogen
@@ -25,4 +27,9 @@ INSTALL
 	make
 
 TEST
+	first launch the server on the program directory.
+	then launch the tests suite:
+		./tests/test.sh <ip of server> <port of server>
 
+AUTHORS
+	Céline Lobry & Alan Jaouen
