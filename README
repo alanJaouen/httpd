@@ -1,0 +1,28 @@
+NAME
+	myHTTPd - run a simple HTTP server
+
+SYNOPSIS
+	./myHTTPd
+
+DESCRIPTION
+	This program run a simple HTTP server that handle GET request (but not
+	execute CGI file). You can use it for create your own server and explore it
+	with your favorite web brower.
+
+	For run this program need ENVIRONEMENT VARIABLE (marked * are mandatory):
+	*	LISTEN_IP:	contains the IP of the server
+
+	*	LISTEN_PORT:	contains the port where the server should accept connexion
+
+		ROOT_DIR:	the root directory of the server. If not set the root directory
+				will be the current directory.
+	
+	GET request can only done on regular file.
+
+INSTALL
+	./autogen
+	./configure
+	make
+
+TEST
+
