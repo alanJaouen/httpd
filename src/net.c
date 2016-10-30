@@ -32,8 +32,15 @@ void get_file(char *name, int fd_user)
     status_msg(fd_user, 404, 0);
   else if (access(f, R_OK))
     status_msg(fd_user, 403, 0);
-  write(STDOUT_FILENO, "file ok\n", 8);
-  return;
+  else
+  {
+    FILE *file = fopen(f, "r");
+    char buf[2048] = {0};
+    fscanf(file, "%s", buf);
+    send(fd_user, buf, strlen(buf), 0);
+    fclose(file);
+  }
+    return;
 }
 
 void make_response(int fd_user)
