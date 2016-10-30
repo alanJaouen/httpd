@@ -11,7 +11,7 @@ int init_server(void);
 
 void make_response(int fd_user);
 
-int check_requestline(char *req, char *file);
+int check_requestline(char *req, char *file, int fd);
 
 enum type
 {

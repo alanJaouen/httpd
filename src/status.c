@@ -1,11 +1,10 @@
 #include "status.h"
 
-void status_msg(int fd, int status, int len)
+void status_msg(int fd, int status, size_t len)
 {
-  char *title = malloc(sizeof (char) * 1024);
   char *str_status = malloc(sizeof(char) * 3);
 
-  title = status_title(status);
+  char *title = status_title(status);
 
   sprintf(str_status, "%d", status);
 
@@ -19,14 +18,13 @@ void status_msg(int fd, int status, int len)
   {
     send(fd, "Content-Length: ", 16, 0);
     char *slen = malloc(sizeof (char) * 1024);
-    sprintf(slen, "%d\r\n", len);
+    sprintf(slen, "%zu\r\n", len);
     send(fd, slen, strlen(slen), 0);
     free(slen);
   }
 
   send(fd, "\r\n", 2, 0);
 
-  free(title);
   free(str_status);
 }
 

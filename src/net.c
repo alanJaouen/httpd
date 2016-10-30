@@ -10,17 +10,37 @@
 #include <unistd.h>
 #include <string.h>
 #include <stdlib.h>
+#include <fcntl.h>
 #include <regex.h>
+#include <sys/mman.h>
+#include <ctype.h>
 #include "net.h"
 #include "fetch_env.h"
 #include "status.h"
 #define BUFFSIZE 1024
 
+void removetrailing(char *str)
+{
+  char *end = str + strlen(str) + 1;
+  while (end > str && !isgraph(*end))
+    --end;
+  end[1] = '\0';
+  return;
+}
+
 //return true if the file exists
 int file_exist(char *path)
 {
+  removetrailing(path);
   struct stat tmp;
-  return !stat(path, &tmp);
+  //write(STDOUT_FILENO, path, 140);
+  printf("%s\n", path);
+  if (stat(path, &tmp))
+  {
+    perror("stat");
+     return 0;
+  }
+  return S_ISREG(tmp.st_mode);
 }
 
 void get_file(char *name, int fd_user)
@@ -34,11 +54,17 @@ void get_file(char *name, int fd_user)
     status_msg(fd_user, 403, 0);
   else
   {
-    FILE *file = fopen(f, "r");
-    char buf[2048] = {0};
-    fscanf(file, "%s", buf);
-    send(fd_user, buf, strlen(buf), 0);
-    fclose(file);
+    struct stat tmp;
+    stat(f, &tmp);
+    FILE *ff = fopen(f, "r");
+    if (!ff)
+      return;
+    ssize_t nbread = 0;
+    char *line = NULL;
+    size_t len = 0;
+    while ((nbread = getline(&line, &len, ff)) != -1)
+      send(fd_user, line, nbread, 0);
+    fclose(ff);
   }
     return;
 }
@@ -49,7 +75,7 @@ void make_response(int fd_user)
   int s_read = read_socket(fd_user, buff, BUFFSIZE);
   char *file = malloc(1024);
 
-  int t =check_requestline(buff, file);
+  int t =check_requestline(buff, file, fd_user);
   while (s_read > 0)
   {
     write(STDOUT_FILENO, buff, s_read);
@@ -57,7 +83,6 @@ void make_response(int fd_user)
     if (!strncmp("\r\n", buff, 2))
       break;
   }
-  write(STDOUT_FILENO, "header ok\n", 10);
   switch (t)
   {
     case -1:
@@ -73,7 +98,7 @@ void make_response(int fd_user)
 }
 
 //return -1 in case of fail
-int check_requestline(char *req, char *file)
+int check_requestline(char *req, char *file, int fd_user)
 {
   char *r = "^(GET|POST) ([\\/_a-zA-Z0-9.-]*) HTTP\\/([0-9]*|[0-9]*\\.[0-9]*)";
   regex_t regex2;
@@ -91,10 +116,10 @@ int check_requestline(char *req, char *file)
         4))
     type = POST;
   else
-    perror("50X");
+    status_msg(fd_user, 505, 0);
   if (strncmp("1.1", req + arr[2].rm_eo + 6, 3))
   {
-    perror("505");//TODO 505
+    status_msg(fd_user, 505, 0);
     type = -1;
   }
   file = memcpy(file, req + arr[2].rm_so,
@@ -138,13 +163,17 @@ int init_server(void)
     perror("socket");
     return 1;
   }
+  int opt = 1;
+  void *v = &opt;
+  char *c = v;
+  setsockopt(fd_sock, SOL_SOCKET, SO_REUSEADDR, c, sizeof(int));
   g_env->fd_server = fd_sock;
   struct sockaddr_in serv;
   serv.sin_family = AF_INET;
   serv.sin_port = htons(atoi(g_env->port));//port
   inet_aton(g_env->ip, &(serv.sin_addr));//ip
 
-  void *v = &serv;
+  v = &serv;
   struct sockaddr *s = v;
   if (bind(fd_sock, s, sizeof(struct sockaddr)) != 0)
   {

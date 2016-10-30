@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <signal.h>
+#include <unistd.h>
 #include "signalhandler.h"
 
 
@@ -19,6 +20,6 @@ void init_handler(void)
 
 void exit_handler(int signum)
 {
-  printf("handler\n");
-  exit(0);
+  write(STDOUT_FILENO, "handler\n", 8);
+  //exit(0);
 }

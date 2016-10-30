@@ -96,29 +96,10 @@ void struct_init(void)
   if (!g_env)
     exit(1);
 
-  g_env->ip = malloc(sizeof (char) * 16);
-
-  if (!g_env->ip)
-  {
-    free(g_env);
-    exit(1);
-  }
-
-  g_env->port = malloc(sizeof (char) * 6);
-
-  if (!g_env->port)
-  {
-    free(g_env->ip);
-    free(g_env);
-    exit(1);
-  }
-
   g_env->rdir = malloc(sizeof (char) * 1024);
 
   if (!g_env->rdir)
   {
-    free(g_env->ip);
-    free(g_env->port);
     free(g_env);
     exit(1);
   }

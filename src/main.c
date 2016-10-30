@@ -1,14 +1,27 @@
 #include <stdio.h>
+#include <signal.h>
 #include "fetch_env.h"
-#include "free_mem.h"
 #include "net.h"
-#include "signalhandler.h"
+
+
+void free_mem(void)
+{
+  free(g_env->rdir);
+  free(g_env);
+}
+
+void clo(int a)
+{
+  a = a + 1;
+  exit(0);
+}
 
 int main()
 {
+  signal(SIGINT, clo);
+  signal(SIGTERM, clo);
   atexit(free_mem);
   fetch_env();
-  init_handler();
   init_server();
   return 9;
   for (int i = 0; i < 5; i++)
