@@ -5,24 +5,23 @@ SYNOPSIS
 	./myHTTPd
 
 DESCRIPTION
-	This program run a simple HTTP server that handle GET request (but not
-	execute CGI file). You can use it for create your own server and explore it
-	with your favorite web brower.
+	This program runs a simple HTTP server that handles GET request (but does not
+	execute CGI files). You can use it to create your own server and explore it
+	with your preferred web browser.
 
-	For run this program need ENVIRONEMENT VARIABLE (marked * are mandatory):
-	*	LISTEN_IP:	contains the IP of the server
+	To run this program you need ENVIRONMENT VARIABLES (marked * are mandatory):
+	*	LISTEN_IP			Contains the IP of the server
 
-	*	LISTEN_PORT:	contains the port where the server should accept connexion
+	*	LISTEN_PORT		Contains the port where the server should accept connexion
 
-		ROOT_DIR:	the root directory of the server. If not set the root directory
-				will be the current directory.
-	
-	GET request can only done on regular file.
+		ROOT_DIR			The root directory of the server. If this variable is not set
+									it will be the current directory.
+
+	GET request can only be done on regular files.
 
 INSTALL
-	./autogen
+	./autogen.sh
 	./configure
 	make
 
 TEST
-
